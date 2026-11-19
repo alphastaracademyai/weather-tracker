@@ -88,10 +88,30 @@ historical_df.to_csv("historical_weather.csv", index=False)
 forecast_df.to_csv("forecast_weather.csv", index=False)
 print("\nData saved to CSV files.")
 
+def get_current_weather(lat, lon):
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "current": "temperature_2m",
+        "timezone": "America/Los_Angeles"
+    }
+    response = requests.get(url, params=params)
+    return response.json()
+
+current_data = get_current_weather(LATITUDE,LONGITUDE)
+current_temp = current_data['current']['temperature_2m']
+current_time = current_data['current']['time']
+
+current_temp = current_data['current']['temperature_2m']
+current_time = current_data['current']['time']
+temp_f = round(current_temp * 9/5 + 32, 1)
+
 log_df = pd.DataFrame({
     "date": [str(today)],
     "time": [current_time],
-    "temperature_2m": [current_temp]
+    "temperature_2m": [current_temp],
+    "temp_f": [temp_f]
 })
 
 log_file = "daily_log.csv"
